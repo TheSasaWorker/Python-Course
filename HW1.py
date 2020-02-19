@@ -103,4 +103,4 @@ else:
     print('Thank you for playing "Generic Dungeon Crawler 1000" !')
     more_info = input('Would you like to follow the development of GDC1K? Y/N ')
     if more_info == 'Y':
-        print('Here is a link to our source code: ')
+        print('Here is a link to our source code: https://github.com/TheSasaWorker/Python-Course/blob/master/HW1.py')
