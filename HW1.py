@@ -30,6 +30,7 @@ while diff_choose != 'Y' and diff_choose != 'N':
 dmg_take = random.randint(diff*3, diff*5) + 10
 dmg_heal = int(50 / diff)
 hp = int(1000 / diff)
+max_hp = hp
 if beta_choose == 'N':    
     print(name + " a luat la dificultatea " + str(diff) + " " + str(dmg_take) + " damage si\n" + "a regenerat " + str(dmg_heal) + " viata. ")
 else:
@@ -54,6 +55,7 @@ else:
         else:
             print('Please write Y should you want to start the game.')
     pts = 0
+    dead = 0
     while game_on == 1:
         enemy_type = random.randint(1, 5)
         if enemy_type == 1:
@@ -89,16 +91,61 @@ else:
             hp = int(hp - dmg_take * enemy_type / 2)
             potion_get = random.randint(1, 3)
             if potion_get == 1:
-                hp = hp + dmg_heal
+                if hp + dmg_heal > max_hp:
+                    hp = max_hp
+                else:
+                    hp = hp + dmg_heal
             pts = pts + 10 * enemy_type * enemy_elem
             if hp <= 0:
                 print('You have died to a ' + elem + ' ' + enemy + '!')
                 game_on = 0
-            print('You are now ' + str(hp) + ' hp.')
+                dead = 1
+            if dead == 0:
+                print('You are now ' + str(hp) + ' hp.')
+                print('You now have ' + str(pts) + ' points.')
         else:
-            print('You have escaped the ' + elem + ' ' + enemy + ' with ' + str(hp) + ' hp!')
-            game_on = 0
-            pts = pts + hp * 2
+            print('You decided to run to a nearby inn.')
+            inn_action = random.randint(1, 5)
+            if inn_action == 4:
+                pts_steal = random.randint(10, 100)
+                hp_steal = int(random.randint(10, 50) * diff / 4)
+                print('On the way to the inn you were ambushed by a Bandit! He managed to steal ' + str(pts_steal) + ' points from you and has dealt ' + str(hp_steal) + ' damage to you!')
+                pts = pts - pts_steal
+                hp = hp - hp_steal
+                if hp <= 0:
+                    dead = 1
+                    game_on = 0
+            elif inn_action == 5:
+                pts_find = random.randint(10, 100)
+                hp_find = random.randint(10, 50)
+                print('On the way to the inn you stumbled upon a treasure chest! You have found ' + str(pts_find) + ' points and a concoction that granted you ' + str(hp_find) + ' hp points!')
+                if hp + hp_find > max_hp:
+                    hp = max_hp
+                else:
+                    hp = hp + hp_find
+                pts = pts + pts_find
+            if dead == 0:
+                game_continue = 'Y'
+                print('You have now arrived at the inn.')
+                game_continue = input('Would you like to continue? Y/N ')
+                if game_continue == 'N':
+                    game_on = 0
+                    print('You have decided to quietly die in your sleep.')
+                else:
+                    print('You have rested & eaten at the inn. You have regained 100 life points.')
+                    if hp + 100 > max_hp:
+                        hp = max_hp
+                    else:
+                        hp = hp + 100
+    print('Your points have been adjusted to your difficulty.')
+    if diff == 1 or diff == 2:
+        pts = int(pts / 4)
+    elif diff == 3 or diff == 4:
+        pts = int(pts / 2)
+    elif diff == 7 or diff == 8:
+        pts = pts * 2
+    elif diff == 9 or diff == 10:
+        pts = pts * 4
     print('You have earned ' + str(pts) + ' points!')
     print('Thank you for playing "Generic Dungeon Crawler 1000" !')
     more_info = input('Would you like to follow the development of GDC1K? Y/N ')
